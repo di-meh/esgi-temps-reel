@@ -21,7 +21,7 @@ The project uses [Prisma](https://www.prisma.io/) to manage the database.
 To create the database, run the following command:
 
 ```bash
-npx prisma db push && npx prisma db seed
+docker compose exec app npx prisma db push && npx prisma db seed
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
