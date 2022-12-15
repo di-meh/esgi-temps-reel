@@ -30,6 +30,14 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
       POSTGRES_DB: db
+      
+  adminer:
+    depends_on:
+      - db
+    image: adminer
+    ports:
+      - 8080:8080
+
 
 volumes:
     db_data:
