@@ -27,16 +27,16 @@ services:
       - "5432:5432"
     # Set the environment variables
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: user
-      POSTGRES_DB: db
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_DB: ${DATABASE_NAME}
       
   adminer:
     depends_on:
       - db
     image: adminer
     ports:
-      - 8080:8080
+      - "8080:8080"
 
 
 volumes:

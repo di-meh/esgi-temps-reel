@@ -1,9 +1,7 @@
 import {Server} from "socket.io";
 
 const SocketHandler = (req, res) => {
-    if (res.socket.server.io) {
-        console.log('Socket is already running')
-    } else {
+    if (!res.socket.server.io) {
         console.log('Socket is initializing')
         const io = new Server(res.socket.server)
         res.socket.server.io = io
@@ -14,8 +12,7 @@ const SocketHandler = (req, res) => {
             })
 
             socket.on("message-sent", (message) => {
-                console.log(message)
-
+                console.log(socket.id, message)
             })
         })
     }

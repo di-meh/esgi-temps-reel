@@ -10,27 +10,27 @@ export default function Home() {
     const [number2, setNumber2] = useState(0)
     const [result, setResult] = useState(0)
     useEffect(() => {
+        const SocketHandler = async () => {
+            await fetch('/api/socket');
+            socket = io();
+
+            socket.on('connect', () => {
+                console.log('connected')
+            });
+            socket.on('result', async (result) => {
+                await setResult(result)
+            });
+
+        };
         SocketHandler();
+
         return () => {
             if (socket) {
                 socket.disconnect();
             }
         };
-        }, []);
+    }, []);
 
-    const SocketHandler = async () => {
-        await fetch('/api/socket');
-        socket = io();
-
-        socket.on('connect', () => {
-            console.log('connected')
-        });
-
-        socket.on('result', async (result) => {
-            await setResult(result)
-        });
-
-    }
   return (
     <div className={styles.container}>
       <Head>
@@ -46,6 +46,7 @@ export default function Home() {
         <input type={"number"} value={number1} onInput={(event) => setNumber1(event.target.valueAsNumber)}/>
         <input type={"number"} value={number2} onInput={(event) => setNumber2(event.target.valueAsNumber)}/>
         <button onClick={() => socket.emit('input-submit', number1, number2)}>Send</button>
+          <button onClick={() => socket.emit('message-sent', 'Hello World')}>Send Message</button>
         <p>{result}</p>
       </main>
 
