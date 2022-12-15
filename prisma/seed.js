@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
-const {randText, randSlug, randNumber } = require("@ngneat/falso");
+const {randText, randSlug, randNumber, randPassword, randEmail, randFirstName } = require("@ngneat/falso");
 const prisma = new PrismaClient()
 
 async function main() {
@@ -10,6 +10,15 @@ async function main() {
                 name: randText(),
                 slug: randSlug(),
                 maxUsers: randNumber({min: 3, max: 10}),
+            },
+        });
+    }
+    for (let i = 0; i < 3; i++) {
+        const users = await prisma.user.create({
+            data: {
+                name: randFirstName(),
+                email: randEmail(),
+                password: randPassword(),
             },
         });
     }
