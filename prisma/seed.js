@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client')
-const {randText, randSlug, randNumber } = require("@ngneat/falso");
+const {randText, randSlug, randNumber, randFirstName, randEmail} = require("@ngneat/falso");
 const prisma = new PrismaClient()
+const bcrypt = require("bcrypt");
 
 async function main() {
     // Seed 10 chat rooms
@@ -10,6 +11,16 @@ async function main() {
                 name: randText(),
                 slug: randSlug(),
                 maxUsers: randNumber({min: 3, max: 10}),
+            },
+        });
+    }
+    // Seed 3 users with "admin" password
+    for (let i = 0; i < 3; i++) {
+        const user = await prisma.user.create({
+            data: {
+                name: randFirstName(),
+                email: randEmail(),
+                password: bcrypt.hashSync("admin", 10),
             },
         });
     }
