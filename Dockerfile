@@ -17,6 +17,7 @@ FROM node:lts as dev
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npx prisma generate
 CMD ["npm", "run", "dev"]
 
 
