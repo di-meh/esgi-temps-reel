@@ -6,6 +6,11 @@ import bcrypt from "bcrypt";
 
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
+    session: {
+        strategy: "jwt",
+        maxAge: 10 * 24 * 60 * 60, // 10 days
+        updateAge: 24 * 60 * 60, // 24 hours
+    },
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -17,14 +22,18 @@ export const authOptions = {
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
+                console.log("LALALALA", user.password, credentials.password, bcrypt.compareSync(credentials.password, user.password));
                 if (user && bcrypt.compareSync(credentials.password, user.password)) {
+                    console.log("User authorized");
                     return user;
                 }
+                console.log("User not authorized");
                 return null;
             },
             callbacks: {
                 jwt: async ({ token, user }) => {
                     if (user) {
+                        console.log("JWT callback: user");
                         token.id = user.id;
                         token.email = user.email;
                     }
@@ -33,6 +42,7 @@ export const authOptions = {
                 },
                 session: async ({ session, token }) => {
                     if (token) {
+                        console.log("Session token", token);
                         session.id = token.id;
                     }
 
