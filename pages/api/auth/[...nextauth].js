@@ -22,12 +22,9 @@ export const authOptions = {
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
-                console.log("LALALALA", user.password, credentials.password, bcrypt.compareSync(credentials.password, user.password));
                 if (user && bcrypt.compareSync(credentials.password, user.password)) {
-                    console.log("User authorized");
                     return user;
                 }
-                console.log("User not authorized");
                 return null;
             },
             callbacks: {
