@@ -27,26 +27,32 @@ export const authOptions = {
                 }
                 return null;
             },
-            callbacks: {
-                jwt: async ({ token, user }) => {
-                    if (user) {
-                        console.log("JWT callback: user");
-                        token.id = user.id;
-                        token.email = user.email;
-                    }
-
-                    return token;
-                },
-                session: async ({ session, token }) => {
-                    if (token) {
-                        console.log("Session token", token);
-                        session.id = token.id;
-                    }
-
-                    return session;
-                },
-            },
         })
     ],
+    callbacks: {
+        jwt: async ({ token, user }) => {
+            if (user) {
+                token.id = user.id;
+                token.email = user.email;
+            }
+
+            return token;
+        },
+        session: async ({ session, token }) => {
+            if (token) {
+                session.user.id = token.id;
+            }
+
+            return session;
+        },
+    },
+    events: {
+        async signOut(message) {
+            await prisma.user.update({
+                where: { email: message.token.email },
+                data: { isAvailable: false },
+            });
+        }
+    }
 }
 export default NextAuth(authOptions)
