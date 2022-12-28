@@ -42,7 +42,6 @@ export const authOptions = {
                         console.log("Session token", token);
                         session.id = token.id;
                     }
-
                     return session;
                 },
             },
