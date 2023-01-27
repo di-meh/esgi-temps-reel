@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
-const {randText, randSlug, randNumber, randFirstName, randEmail} = require("@ngneat/falso");
+const {randText, randSlug, randNumber, randPassword, randEmail, randFirstName } = require("@ngneat/falso");
 const prisma = new PrismaClient()
 const bcrypt = require("bcrypt");
 
