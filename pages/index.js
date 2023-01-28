@@ -1,14 +1,12 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import {io} from "socket.io-client";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
+import { useSession, signIn, signOut } from "next-auth/react"
 
 let socket;
 export default function Home() {
-    const [number1, setNumber1] = useState(0)
-    const [number2, setNumber2] = useState(0)
-    const [result, setResult] = useState(0)
+    const { data: session } = useSession()
     useEffect(() => {
         const SocketHandler = async () => {
             await fetch('/api/socket');
@@ -16,9 +14,6 @@ export default function Home() {
 
             socket.on('connect', () => {
                 console.log('connected')
-            });
-            socket.on('result', async (result) => {
-                await setResult(result)
             });
 
         };
@@ -41,27 +36,19 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to our website !
         </h1>
-        <input type={"number"} value={number1} onInput={(event) => setNumber1(event.target.valueAsNumber)}/>
-        <input type={"number"} value={number2} onInput={(event) => setNumber2(event.target.valueAsNumber)}/>
-        <button onClick={() => socket.emit('input-submit', number1, number2)}>Send</button>
-          <button onClick={() => socket.emit('message-sent', 'Hello World')}>Send Message</button>
-        <p>{result}</p>
+          <section>
+              {!session && <div className="mt-4 flex flex-col items-center gap-4">
+                  <p className="text-lg">Not signed in as admin</p>
+                  <button type="button" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" onClick={() => signIn()}>Sign in</button>
+              </div>}
+              {session && <div>
+                  <p>Signed in as {session.user.email}</p>
+                  <button type="button" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" onClick={()=> signOut()}>Sign out</button>
+              </div>}
+          </section>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 }

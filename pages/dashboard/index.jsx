@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {authOptions} from "../api/auth/[...nextauth]";
 import {unstable_getServerSession} from "next-auth";
+import {signIn} from "next-auth/react";
 
 export default function Dashboard({sessionProps}) {
     const [isAvailable, setIsAvailable] = useState(false)
@@ -34,6 +35,11 @@ export default function Dashboard({sessionProps}) {
                 </form>
 
             </>}
+            {!sessionProps && <>
+                <p>Not signed in</p>
+                <button onClick={() => signIn()}>Sign in</button>
+            </>
+            }
         </>
     )
 }
