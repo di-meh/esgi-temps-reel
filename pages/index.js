@@ -9,7 +9,7 @@ export default function Home() {
     const { data: session } = useSession()
     useEffect(() => {
         const SocketHandler = async () => {
-            await fetch('/api/socket');
+            await fetch('/api/socketio');
             socket = io();
 
             socket.on('connect', () => {

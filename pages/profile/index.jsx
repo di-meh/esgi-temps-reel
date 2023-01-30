@@ -4,7 +4,7 @@ export default function Profile() {
     return (
         <>
             {!session && <>
-                <p>Not signed in</p>
+                <p>Not signed in as admin</p>
                 <button onClick={() => signIn()}>Sign in</button>
             </>}
             {session && <>

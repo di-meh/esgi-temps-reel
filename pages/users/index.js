@@ -22,7 +22,7 @@ export default function User({ users }) {
         return (
             <div>
                 {!session && <>
-                    <p>Not signed in</p>
+                    <p>Not signed in as admin</p>
                     <button onClick={() => signIn()}>Sign in</button>
                 </>}
 

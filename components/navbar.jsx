@@ -8,6 +8,7 @@ export default function Navbar() {
             <Link href={"/profile"}>Profile</Link>
             <Link href={"/dashboard"}>Dashboard</Link>
             <Link href={"/users"}>Users</Link>
+            <Link href={"/rooms"}>Rooms</Link>
         </nav>
     );
 }

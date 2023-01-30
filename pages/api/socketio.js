@@ -6,16 +6,32 @@ export const config = {
   },
 };
 
-export default async (req, res) => {
+const SocketHandler = async (req, res) => {
   if (!res.socket.server.io) {
-    console.log("New Socket.io server...");
-    // adapt Next's net Server to http Server
-    const httpServer = res.socket.server;
-    const io = new ServerIO(httpServer, {
-      path: "/api/socketio",
-    });
-    // append SocketIO server to Next.js socket server response
+    const io = new ServerIO(res.socket.server);
     res.socket.server.io = io;
+    io.on("connection", (socket) => {
+        console.log("New client connected");
+        socket.on("join", (room) => {
+            if (room === undefined || room === null) return;
+            console.log("Joining room", room);
+            socket.join(room);
+        });
+        socket.on("leave", (room) => {
+            if (room === undefined || room === null) return;
+            console.log("Leaving room", room);
+            socket.leave(room);
+        });
+        socket.on("room-message", (room, message) => {
+            if (room === undefined || room === null) return;
+            console.log("Message received", message);
+            socket.to(room).emit("room-message-receive", message);
+        });
+    }
+    );
+    console.log("New Socket.io server started");
   }
   res.end();
 };
+
+export default SocketHandler;

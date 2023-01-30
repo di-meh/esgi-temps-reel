@@ -36,7 +36,7 @@ export default function Dashboard({sessionProps}) {
 
             </>}
             {!sessionProps && <>
-                <p>Not signed in</p>
+                <p>Not signed in as admin</p>
                 <button onClick={() => signIn()}>Sign in</button>
             </>
             }
