@@ -2,9 +2,10 @@ import {io} from "socket.io-client";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {randUuid} from "@ngneat/falso";
+import {updateRoom, getRoomBySlug} from "../api/rooms/[id]";
 
 let socket;
-export default function Room() {
+export default function Room({room}) {
     const [messages, setMessages] = useState([]);
     const router = useRouter();
     const { slug } = router.query;
@@ -27,15 +28,33 @@ export default function Room() {
             });
 
         };
+        const leaveRoom = async () => {
+            const newUserCount = room.currentUsers < 0 ? room.currentUsers - 1: 0;
+            const response = await fetch('/api/rooms/' + room.id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    currentUsers: newUserCount
+                })
+            });
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+        };
         SocketHandler();
+
+        router.events.on('routeChangeStart', leaveRoom);
 
         return () => {
             if (socket) {
                 socket.emit('leave', slug);
                 socket.disconnect();
+                router.events.off('routeChangeStart', leaveRoom);
             }
         };
-    }, [slug]);
+    }, [room.currentUsers, room.id, router.events, slug]);
 
     return (
         <div>
@@ -79,4 +98,22 @@ export default function Room() {
 
         </div>
     )
+}
+export async function getServerSideProps(context) {
+    const { slug } = context.params;
+    const room = await getRoomBySlug(slug).then(res => JSON.parse(res));
+    if (room.currentUsers >= room.maxUsers) {
+        return {
+            redirect: {
+                destination: '/rooms',
+                permanent: false,
+            },
+        }
+    }
+    await updateRoom(room.id, {currentUsers: room.currentUsers + 1});
+    return {
+        props: {
+            room
+        }
+    }
 }

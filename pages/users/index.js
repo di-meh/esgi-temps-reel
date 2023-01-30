@@ -1,12 +1,6 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../../styles/Rooms.module.css'
-import { io } from "socket.io-client";
-import { useEffect, useState } from "react";
 import { getUsers } from '../api/users';
 import { useSession, signIn, signOut } from "next-auth/react"
-let socket;
-
+import Link from "next/link";
 
 export default function User({ users }) {
     const { data: session } = useSession();
@@ -31,7 +25,7 @@ export default function User({ users }) {
                     <div className='flex flex-col'>
                         {users.map((user) => (
                             <div key={user.id}>
-                            { user.email === session.user.email ? <div  style={{display: 'none'}}></div> : <div style={{padding: '1em'}}><p>{user.name}</p><a href={'/users/' + user.id}>Chat</a></div> }
+                            { user.email === session.user.email ? <div  style={{display: 'none'}}></div> : <div style={{padding: '1em'}}><p>{user.name}</p><Link href={'/users/' + user.id}>Chat</Link></div> }
                             </div>
                         ))}
                     </div>

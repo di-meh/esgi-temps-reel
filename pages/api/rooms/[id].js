@@ -9,6 +9,14 @@ export async function getRoom(id) {
     }));
 }
 
+export async function getRoomBySlug(slug) {
+    return JSON.stringify(await prisma.chatRoom.findUnique({
+        where: {
+            slug
+        }
+    }));
+}
+
 export async function updateRoom(id, data) {
 
     return await prisma.chatRoom.update({
@@ -72,5 +80,23 @@ export default async function handler(req, res) {
                 return res.status(405).end()
         }
 
+    }
+    else {
+        switch (req.method) {
+            case "PUT":
+                const {currentUsers} = req.body
+                const updatedPutRoom = await updateRoom(id, {
+                    currentUsers: parseInt(currentUsers)
+                });
+                if (updatedPutRoom) {
+                    res.status(204).end()
+                }
+                else {
+                    res.status(404).end()
+                }
+                break;
+            default:
+                return res.status(405).end()
+        }
     }
 }

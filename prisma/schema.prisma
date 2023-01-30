@@ -64,6 +64,7 @@ model ChatRoom {
   id        Int      @id @default(autoincrement())
   name      String
   slug      String   @unique
+  currentUsers Int @default(0) @map("current_users")
   maxUsers  Int
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
